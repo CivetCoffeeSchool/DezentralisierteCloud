@@ -1,0 +1,12 @@
+﻿services:
+  webgui:
+    image: webgui
+    build:
+      context: .
+      dockerfile: webGUI/Dockerfile
+
+  webgui-1:
+    image: webgui-1
+    build:
+      context: .
+      dockerfile: WebGUI/Dockerfile

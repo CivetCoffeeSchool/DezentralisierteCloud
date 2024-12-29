@@ -10,3 +10,9 @@
     build:
       context: .
       dockerfile: WebGUI/Dockerfile
+
+  webapi:
+    image: webapi
+    build:
+      context: .
+      dockerfile: WebAPI/Dockerfile

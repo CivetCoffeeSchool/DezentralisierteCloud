@@ -8,13 +8,17 @@ namespace Domain.Repositories.Implementations;
 
 public class UserRepository:ARepository<User>,IUserRepository
 {
-    
-    private readonly IDataOwnershipRepository _ownershipRepository;
-
-    public UserRepository(DbContext dbContext, IDataOwnershipRepository ownershipRepository) : base(dbContext)
+    private readonly IUserRepository _userRepository;
+    public UserRepository(DbContext dbContext, UserRepository userRepository) : base(dbContext)
     {
-        _ownershipRepository = ownershipRepository;
+        _userRepository = userRepository;
     }
+
+    public async Task<User?> ReadGraphAsync(string username)=> await _dbSet
+        .Include(u=>u.DataOwnerships)
+        .ThenInclude(d=>d.Data)
+        .FirstOrDefaultAsync(u => u.Username == username);
+        
 
     public async Task<User?> GetByUsernameAsync(string username)
     {
@@ -47,18 +51,6 @@ public class UserRepository:ARepository<User>,IUserRepository
         return VerifyPassword(password, user.PasswordHash, user.PasswordSalt) ? user : null;
     }
 
-    public async Task<bool> ValidateOwnershipAsync(string username, int dataId)
-    {
-        var ownership = await _ownershipRepository.GetOwnershipAsync(username, dataId);
-        return ownership != null;
-    }
-
-    public async Task<List<Data>> GetUserFilesAsync(string username)
-    {
-        var ownerships = await _ownershipRepository.GetByUsernameAsync(username);
-        return ownerships.Select(o => o.Data).ToList();
-    }
-
     private static (string hash, string salt) GenerateHashAndSalt(string password)
     {
         var salt = Guid.NewGuid().ToString();
@@ -70,5 +62,12 @@ public class UserRepository:ARepository<User>,IUserRepository
     {
         var computedHash = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(password + salt)));
         return computedHash == hash;
+    }
+
+    public async Task<User?> AuthenticateUserAsync(string username, string password)
+    {
+        var user = await GetByUsernameAsync(username);
+        if (user == null) return null;
+        return VerifyPassword(password, user.PasswordHash, user.PasswordSalt) ? user : null;
     }
 }

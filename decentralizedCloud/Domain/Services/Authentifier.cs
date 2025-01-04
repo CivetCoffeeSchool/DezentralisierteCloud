@@ -1,6 +1,6 @@
 ﻿namespace Domain.Services;
 
-public interface IUserService
+public class Authentifier
 {
     
 }

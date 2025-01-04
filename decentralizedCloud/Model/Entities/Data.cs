@@ -14,4 +14,6 @@ public class Data
     [Column("SIZE")]
     [Required]
     public int Size { get; set; }//Byte
+    
+    public List<DataDistribution> DataDistributions { get; set; } = new List<DataDistribution>();
 }

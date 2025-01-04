@@ -17,4 +17,6 @@ public class User
     [Column("PASSWORD_SALT")]
     [Required]
     public string PasswordSalt{ get; set; }
+    
+    public List<DataOwnership> DataOwnerships{ get; set; } = new List<DataOwnership>();
 }

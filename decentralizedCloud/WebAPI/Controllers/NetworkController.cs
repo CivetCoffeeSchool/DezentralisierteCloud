@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using Model.Entities;
 
 namespace WebAPI.Controllers;
-
-public class NetworkController:Controller
+[ApiController]
+[Route("api/network")]
+public class NetworkController:ControllerBase
 {
     private readonly IUserRepository _userRepository;
     private readonly IDataOwnershipRepository _dataOwnershipRepository;
     private readonly IPeerRepository _peerRepository;
     private NetworkConfiguration _networkConfiguration;
 
-    [HttpPost]
+    [HttpPost("start")]
     public async Task<IActionResult> StartNetwork(string adminUsername, string adminPassword, int totalSpace)
     {
         _networkConfiguration = new NetworkConfiguration();
@@ -45,7 +46,7 @@ public class NetworkController:Controller
         return Ok(new { Message = "Network started"});
     }
 
-    [HttpPost("network/{credential}")]
+    [HttpPost("join/{credential}")]
     public async Task<IActionResult> JoinNetwork(string credential, [FromBody] int totalSpace)
     { 
         if (credential != _networkConfiguration.NetworkHash)

@@ -8,9 +8,14 @@ public class NetworkController:Controller
 {
     private readonly IUserRepository _userRepository;
     private readonly IDataOwnershipRepository _dataOwnershipRepository;
+    private readonly IPeerRepository _peerRepository;
+    private NetworkConfiguration _networkConfiguration;
+
     [HttpPost]
-    public async Task<IActionResult> StartNetwork(string adminUsername, string adminPassword)
+    public async Task<IActionResult> StartNetwork(string adminUsername, string adminPassword, int totalSpace)
     {
+        _networkConfiguration = new NetworkConfiguration();
+        
         // Create admin user
         var salt = GenerateSalt();
         var passwordHash = ComputeHash(adminPassword, salt);
@@ -24,27 +29,34 @@ public class NetworkController:Controller
         };
 
         await _userRepository.CreateAsync(admin);
-
+        
+        
         // Create super peer
         var superPeer = new Peer
         {
-            Credential = Guid.NewGuid().ToString(),
-            IsSuperpeer = true
+            IsSuperpeer = true,
+            TotalSpace = totalSpace,
+            IpAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
+            Port = HttpContext.Connection.RemotePort
         };
+        
+        await _peerRepository.CreateAsync(superPeer);
 
-        _context.Peers.Add(superPeer);
-        _context.SaveChanges();
-
-        return Ok(new { Message = "Network started", Credential = superPeer.Credential });
+        return Ok(new { Message = "Network started"});
     }
 
-    [HttpPost]
-    public IActionResult JoinNetwork(string credential)
-    {
-        var peer = _context.Peers.FirstOrDefault(p => p.Credential == credential);
-
-        if (peer == null)
-            return Unauthorized("Invalid credential");
+    [HttpPost("network/{credential}")]
+    public async Task<IActionResult> JoinNetwork(string credential, [FromBody] int totalSpace)
+    { 
+        if (credential != _networkConfiguration.NetworkHash)
+            return Unauthorized();
+        await _peerRepository.CreateAsync(new Peer
+        {
+            IsSuperpeer = false,
+            TotalSpace = totalSpace,
+            IpAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
+            Port = HttpContext.Connection.RemotePort
+        });
 
         return Ok(new { Message = "Peer joined successfully" });
     }

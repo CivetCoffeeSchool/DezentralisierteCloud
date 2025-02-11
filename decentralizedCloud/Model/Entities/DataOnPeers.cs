@@ -3,16 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model.Entities;
 [Table("DATA_SAVED_ON_PEERS_JT")]
-public class DataDistribution
+public class DataOnPeers
 {
     [Column("SEQUENCE_NUMBER"),Key]
     public int SequenceNumber { get; set; }
     
-    public Data Data { get; set; }
-    [Column("DATA_ID")]
+    [Column("DATA_ID"),Required]
     public int DataId { get; set; }
     
-    public Peer Peer { get; set; }
-    [Column("PEER_ID")]
+    [Column("PEER_ID"),Required]
     public string PeerMacAddress { get; set; }
+    
+    public Data Data { get; set; }
+    public Peer Peer { get; set; }
 }

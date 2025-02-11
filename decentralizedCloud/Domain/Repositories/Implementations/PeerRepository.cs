@@ -18,7 +18,7 @@ public class PeerRepository: ARepository<Peer>, IPeerRepository
         return peers.FirstOrDefault();
     }
     
-    public async Task<Peer> GetSuperPeerAsync()
+    public async Task<Peer?> GetSuperPeerAsync()
     {
         var peers = await ReadAsync(p => p.peerType=="SUPERPEER");
         return peers.FirstOrDefault();

@@ -5,11 +5,10 @@ namespace Model.Entities;
 [Table("USERS")]
 public class User
 {
-    [Column("USERNAME_ST")]
-    [Key]
+    [Column("USER_NAME"),StringLength(50),Key]
     public string Username{ get; set; }
     
-    [Column("USER_TYPE"),MaxLength(50)]
+    [Column("USER_TYPE"),StringLength(50)]
     [Required]
     public string userType{ get; set; }
     
@@ -21,5 +20,5 @@ public class User
     [Required]
     public string PasswordSalt{ get; set; }
 
-    public List<DataOwnership> DataOwnerships{ get; set; } = new List<DataOwnership>();
+    public List<UserAccessData> DataOwnerships{ get; set; } = new List<UserAccessData>();
 }

@@ -13,17 +13,11 @@ public class FileController: ControllerBase
     private readonly IUserRepository _userRepository;
     private readonly IPeerRepository _peerRepository;
     private readonly IDataRepository _dataRepository;
-    private readonly IPeerService _peerService;
-    public FileController(
-        IUserRepository userRepository,
-        IPeerRepository peerRepository,
-        IDataRepository dataRepository,
-        IPeerService peerService)
+    public FileController(IUserRepository userRepository, IPeerRepository peerRepository, IDataRepository dataRepository)
     {
         _userRepository = userRepository;
         _peerRepository = peerRepository;
         _dataRepository = dataRepository;
-        _peerService = peerService;
     }
 
     /*[HttpPost("upload")]

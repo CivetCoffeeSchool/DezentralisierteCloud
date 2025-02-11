@@ -3,13 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model.Entities;
 [Table("USERS_HAS_ACCESS_TO_DATA_JT")]
-public class DataOwnership
+public class UserAccessData
 {
-    public User User { get; set; }
-    [Column("USERNAME"),Required,MaxLength(50)]
+    [Column("USER_NAME"),Required,StringLength(50)]
     public string Username { get; set; }
+    public User User { get; set; }
     
     public Data Data { get; set; }
+    
     [Column("DATA_ID")]
     public int DataId { get; set; }
     

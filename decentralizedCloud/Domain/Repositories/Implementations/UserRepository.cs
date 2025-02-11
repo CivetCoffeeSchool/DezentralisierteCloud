@@ -2,18 +2,17 @@
 using System.Text;
 using Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Model.Configuration;
 using Model.Entities;
 
 namespace Domain.Repositories.Implementations;
 
 public class UserRepository:ARepository<User>,IUserRepository
 {
-    private readonly IUserRepository _userRepository;
-    public UserRepository(DbContext dbContext, UserRepository userRepository) : base(dbContext)
+    public UserRepository(NetworkinfoDbContext dbContext) : base(dbContext)
     {
-        _userRepository = userRepository;
+        
     }
-
     public async Task<User?> ReadGraphAsync(string username)=> await _dbSet
         .Include(u=>u.DataOwnerships)
         .ThenInclude(d=>d.Data)
@@ -26,7 +25,7 @@ public class UserRepository:ARepository<User>,IUserRepository
     }
 
 
-    public async Task<User?> RegisterAsync(string username, string password, bool isAdmin = false)
+    public async Task<User?> RegisterAsync(string username, string password, string userType = "USER")
     {
         // var existingUser = await GetByUsernameAsync(username);
         // if (existingUser != null) return null;
@@ -38,7 +37,7 @@ public class UserRepository:ARepository<User>,IUserRepository
             Username = username,
             PasswordHash = hash,
             PasswordSalt = salt,
-            IsAdmin = isAdmin
+            userType = userType
         };
         return await CreateAsync(user);
     }

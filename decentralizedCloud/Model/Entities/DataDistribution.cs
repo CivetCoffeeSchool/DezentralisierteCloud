@@ -5,8 +5,7 @@ namespace Model.Entities;
 [Table("DATA_SAVED_ON_PEERS_JT")]
 public class DataDistribution
 {
-    [Column("SEQUENCE_NUMBER")]
-    [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("SEQUENCE_NUMBER"),Key]
     public int SequenceNumber { get; set; }
     
     public Data Data { get; set; }
@@ -15,5 +14,5 @@ public class DataDistribution
     
     public Peer Peer { get; set; }
     [Column("PEER_ID")]
-    public int PeerId { get; set; }
+    public string PeerMacAddress { get; set; }
 }

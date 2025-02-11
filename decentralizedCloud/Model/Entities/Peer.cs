@@ -2,15 +2,15 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model.Entities;
-[Table("PEERS")]
+[Table("PEERS_ST")]
 public class Peer
 {
     [Column("ID")]
-    [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-    [Column("IS_SUPERPEER")]
+    [Key]
+    public string MacAddress { get; set; }
+    [Column("PEER_TYPE"),MaxLength(50)]
     [Required]
-    public bool IsSuperpeer { get; set; }
+    public string peerType { get; set; }
     [Column("TOTAL_SPACE")]
     [Required]
     public int TotalSpace { get; set; }
@@ -20,4 +20,5 @@ public class Peer
     [Column("PORT")]
     [Required]
     public int Port { get; set; }
+
 }

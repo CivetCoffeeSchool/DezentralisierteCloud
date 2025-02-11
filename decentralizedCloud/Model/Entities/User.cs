@@ -5,18 +5,21 @@ namespace Model.Entities;
 [Table("USERS")]
 public class User
 {
-    [Column("USERNAME")]
+    [Column("USERNAME_ST")]
     [Key]
-    public string Username{ get; set; }//is unique
-    [Column("IS_ADMIN")]
+    public string Username{ get; set; }
+    
+    [Column("USER_TYPE"),MaxLength(50)]
     [Required]
-    public bool IsAdmin{ get; set; }
+    public string userType{ get; set; }
+    
     [Column("PASSWORD_HASH")]
     [Required]
     public string PasswordHash{ get; set; }
+    
     [Column("PASSWORD_SALT")]
     [Required]
     public string PasswordSalt{ get; set; }
-    
+
     public List<DataOwnership> DataOwnerships{ get; set; } = new List<DataOwnership>();
 }

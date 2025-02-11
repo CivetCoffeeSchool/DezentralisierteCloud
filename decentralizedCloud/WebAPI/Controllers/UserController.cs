@@ -29,7 +29,7 @@ public class UserController : Controller
             Username = dto.Username,
             PasswordHash = hash,
             PasswordSalt = salt,
-            IsAdmin = false
+            userType = "USER"
         };
 
         await _userRepository.CreateAsync(user);

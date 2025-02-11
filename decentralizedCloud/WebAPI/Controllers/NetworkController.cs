@@ -8,7 +8,7 @@ namespace WebAPI.Controllers;
 public class NetworkController:ControllerBase
 {
     private readonly IUserRepository _userRepository;
-    private readonly IDataOwnershipRepository _dataOwnershipRepository;
+    private readonly IDataRepository _dataOwnershipRepository;
     private readonly IPeerRepository _peerRepository;
     private NetworkConfiguration _networkConfiguration;
 
@@ -26,7 +26,7 @@ public class NetworkController:ControllerBase
             Username = adminUsername,
             PasswordHash = passwordHash,
             PasswordSalt = Convert.ToBase64String(salt),
-            IsAdmin = true
+            userType = "USER"
         };
 
         await _userRepository.CreateAsync(admin);
@@ -35,7 +35,7 @@ public class NetworkController:ControllerBase
         // Create super peer
         var superPeer = new Peer
         {
-            IsSuperpeer = true,
+            peerType = "PEER",
             TotalSpace = totalSpace,
             IpAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
             Port = HttpContext.Connection.RemotePort
@@ -53,7 +53,7 @@ public class NetworkController:ControllerBase
             return Unauthorized();
         await _peerRepository.CreateAsync(new Peer
         {
-            IsSuperpeer = false,
+            peerType = "PEER",
             TotalSpace = totalSpace,
             IpAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
             Port = HttpContext.Connection.RemotePort

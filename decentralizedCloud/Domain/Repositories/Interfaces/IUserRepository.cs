@@ -7,7 +7,7 @@ public interface IUserRepository : IRepository<User>
     Task<User?> ReadGraphAsync(string username);
     
     Task<User?> GetByUsernameAsync(string username);
-    Task<User?> RegisterAsync(string username, string password, bool isAdmin = false);
+    Task<User?> RegisterAsync(string username, string password, string userType = "USER");
     Task<User?> LoginAsync(string username, string password);
     // Task<bool> ValidateOwnershipAsync(string username, int dataId);
     // Task<List<Data>> GetUserFilesAsync(string username);

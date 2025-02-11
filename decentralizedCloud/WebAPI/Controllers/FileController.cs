@@ -26,7 +26,7 @@ public class FileController: ControllerBase
         _peerService = peerService;
     }
 
-    [HttpPost("upload")]
+    /*[HttpPost("upload")]
     public async Task<IActionResult> UploadFile([FromForm] UploadFileRequestDto request)
     {
         // Step 1: Authenticate the user
@@ -109,6 +109,50 @@ public class FileController: ControllerBase
             FileName = request.FileName,
             Peers = peerLocations
         });
+    }*/
+    
+    [HttpGet("GetIpForData")]
+    public async Task<IActionResult> GetIpForData([FromQuery] string filename)
+    {
+        if (await _dataRepository.ExistsAsync(d => d.Name == filename))
+        {
+            await _dataRepository.GetPeersByDataIdAsync(1);
+        }
+        else
+        {
+            return NotFound("File not found");
+        }
+        
+        // Aufteilen: Sequenznumber_Filename
+
+        return BadRequest();
     }
-}
+
+    [HttpGet("FileInfoPerFilename")]
+    public async Task<IActionResult> GetFileInfoPerFilename([FromQuery] string filename)
+    {
+        
+        List<Data?> dataFiles = await _dataRepository.GetFilesPerFilename(filename);
+        if (dataFiles.Count > 0)
+        {
+            return Ok(dataFiles);
+        }
+        return NotFound("File not found");
+    }
+
+    [HttpGet("GetPeers")]
+    public async Task<IActionResult> GetPeers(int dataId)
+    {
+        Dictionary<string, int> ips = new Dictionary<string, int>();
+        List<Peer> peers = await _dataRepository.GetPeersByDataIdAsync(dataId);
+        if (peers.Count == 0)
+        {
+            return NotFound("File not available");
+        }
+        foreach (var p in peers)
+        {
+            ips.Add(p.IpAddress, p.Port);
+        }
+        return Ok(ips);
+    }
 }

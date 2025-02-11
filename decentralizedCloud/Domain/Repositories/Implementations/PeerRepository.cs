@@ -1,16 +1,15 @@
 ﻿using System.Net;
 using Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Model.Configuration;
 using Model.Entities;
 
 namespace Domain.Repositories.Implementations;
 
 public class PeerRepository: ARepository<Peer>, IPeerRepository 
 {
-    private readonly IPeerRepository _peerRepository;
-    public PeerRepository(DbContext context, PeerRepository peerRepository) : base(context)
+    public PeerRepository(NetworkinfoDbContext context) : base(context)
     {
-        _peerRepository = peerRepository;
     }
     
     public async Task<Peer?> FindPeerByIpAndPortAsync(string? ipAddress, int port)
@@ -21,7 +20,7 @@ public class PeerRepository: ARepository<Peer>, IPeerRepository
     
     public async Task<Peer> GetSuperPeerAsync()
     {
-        var peers = await ReadAsync(p => p.IsSuperpeer);
+        var peers = await ReadAsync(p => p.peerType=="SUPERPEER");
         return peers.FirstOrDefault();
     }
 }

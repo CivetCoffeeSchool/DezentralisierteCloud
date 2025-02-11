@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Model.Configuration;
 
 namespace Domain.Repositories.Implementations;
 
@@ -9,7 +10,7 @@ public class ARepository<TEntity>:IRepository<TEntity>where TEntity:class
     protected readonly DbContext _context;
     protected readonly DbSet<TEntity> _dbSet;
 
-    public ARepository(DbContext context)
+    public ARepository(NetworkinfoDbContext context)
     {
         _context = context;
         _dbSet = _context.Set<TEntity>();

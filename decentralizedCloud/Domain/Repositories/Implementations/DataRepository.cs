@@ -1,17 +1,19 @@
 ﻿using Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Model.Configuration;
 using Model.Entities;
 
 namespace Domain.Repositories.Implementations;
 
 public class DataRepository: ARepository<Data>, IDataRepository
 {
-    private readonly IDataRepository _dataRepository;
-    public DataRepository(DbContext context, DataRepository dataRepository) : base(context)
+    public DataRepository(NetworkinfoDbContext context) : base(context)
     {
-        _dataRepository = dataRepository;
+
     }
     
     public async Task<List<Peer>> GetPeersByDataIdAsync(int dataId)=>
-        await _dbSet.Include(d=).Where(d=>d.Id==dataId).ToListAsync();
+        await _dbSet.Where(d=> d.Id==dataId).SelectMany(d=> d.DataDistributions).Select(d=>d.Peer).ToListAsync();
+    
+    public async Task<List<Data?>> GetFilesPerFilename(string filename) => await _dbSet.Where(d=>d.Name==filename).ToListAsync();
 }

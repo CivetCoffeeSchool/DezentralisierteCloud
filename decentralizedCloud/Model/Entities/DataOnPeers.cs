@@ -14,6 +14,7 @@ public class DataOnPeers
     [Column("PEER_ID"),Required]
     public string PeerMacAddress { get; set; }
     
+    
     public Data Data { get; set; }
     public Peer Peer { get; set; }
 }

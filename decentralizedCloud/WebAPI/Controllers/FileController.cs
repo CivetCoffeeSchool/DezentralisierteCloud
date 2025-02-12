@@ -108,9 +108,22 @@ public class FileController: ControllerBase
     [HttpGet("GetIpForData")]
     public async Task<IActionResult> GetIpForData([FromQuery] string filename)
     {
+        List<Peer> peers = new List<Peer>();
+        Dictionary<string,int> peerIds = new Dictionary<string, int>();
+        
         if (await _dataRepository.ExistsAsync(d => d.Name == filename))
         {
-            await _dataRepository.GetPeersByDataIdAsync(1);
+            Console.WriteLine("File found");
+            foreach (var file in await _dataRepository.GetFilesPerFilename(filename))
+            {
+                Console.WriteLine($"FileId: {file.Id}");
+               peers = _dataRepository.GetPeersByDataIdAsync(file.Id).GetAwaiter().GetResult();
+               foreach (var p in peers)
+               {
+                   peerIds[p.IpAddress]=p.Port;
+               }
+            }
+            return Ok(peerIds);
         }
         else
         {

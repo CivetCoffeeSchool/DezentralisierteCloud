@@ -5,10 +5,13 @@ namespace Model.Entities;
 [Table("USERS")]
 public class User
 {
-    [Column("USER_NAME"),StringLength(50),Key]
+    [Column("USER_ID"),Key]
+    public int UserId { get; set; }
+    
+    [Column("USERNAME"),StringLength(50),Required]
     public string Username{ get; set; }
     
-    [Column("USER_TYPE"),StringLength(50)]
+    [Column("USER_TYPE"),StringLength(50),]
     [Required]
     public string userType{ get; set; }
     

@@ -7,7 +7,7 @@ public class Data
 {
     public Data()
     {
-        uploadTime = DateTime.Now;
+        uploadTime = DateTimeOffset.UtcNow;
     }
     
     [Column("DATA_ID")]
@@ -22,7 +22,7 @@ public class Data
     public int Size { get; set; }//Byte
     
     [Column("UPLOAD_TIME"),Required] 
-    public DateTime uploadTime { get; set; }
+    public DateTimeOffset uploadTime { get; init; }
     
     public List<DataOnPeers> DataDistributions { get; set; } = new List<DataOnPeers>();
 }

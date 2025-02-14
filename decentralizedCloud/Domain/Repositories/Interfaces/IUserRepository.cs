@@ -4,8 +4,11 @@ namespace Domain.Repositories.Interfaces;
 
 public interface IUserRepository : IRepository<User>
 {
-    Task<User?> ReadGraphAsync(string username);
+    Task<List<Group>> GetUserGroups(string username);
+    Task<string?> GetUserAccessData(string username, int dataId);
     
+    
+    Task<User?> ReadGraphAsync(string username);
     Task<User?> GetByUsernameAsync(string username);
     Task<User?> RegisterAsync(string username, string password, string userType = "USER");
     Task<User?> LoginAsync(string username, string password);

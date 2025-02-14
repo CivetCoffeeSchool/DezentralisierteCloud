@@ -1,7 +1,10 @@
 using Domain.Repositories.Implementations;
 using Domain.Repositories.Interfaces;
+using Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
+using Microsoft.AspNetCore.Identity;
+using Model.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,7 @@ builder.Services.AddDbContextFactory<NetworkinfoDbContext>(
         new MySqlServerVersion(new Version(8,0,33))
     )
 );
+
 
 var app = builder.Build();
 

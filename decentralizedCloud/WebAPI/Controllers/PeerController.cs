@@ -1,19 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Model.Configuration;
 using Model.Entities;
 
 namespace WebAPI.Controllers;
 
 
-/*public class PeerController : Controller
+public class PeerController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IPeerRepository _peerRepository;
 
-    public PeerController(AppDbContext context)
+    public PeerController(IPeerRepository peerRepository)
     {
-        _context = context;
+        _peerRepository = peerRepository;
     }
 
-    [HttpGet]
+
+    
+
+    /*[HttpGet]
     public IActionResult Register() => View();
 
     [HttpPost]
@@ -35,5 +41,5 @@ namespace WebAPI.Controllers;
             return NotFound();
 
         return View(peer);
-    }
-}*/
+    }*/
+}

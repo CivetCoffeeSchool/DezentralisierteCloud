@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace Model.Entities;
 [Table("USERS")]
 public class User
 {
     [Column("USER_ID"),Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int UserId { get; set; }
     
     [Column("USERNAME"),StringLength(50),Required]
@@ -24,4 +26,5 @@ public class User
     public string PasswordSalt{ get; set; }
 
     public List<UserAccessData> DataOwnerships{ get; set; } = new List<UserAccessData>();
+    public List<UserHasGroup> UserGroups{ get; set; } = new List<UserHasGroup>();
 }

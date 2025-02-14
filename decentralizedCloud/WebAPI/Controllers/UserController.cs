@@ -9,6 +9,8 @@ namespace WebAPI.Controllers;
 [Route("api/users")]
 public class UserController : Controller
 {
+    // TODO Implementierung von AspentCore.Identety 
+    
     private readonly IUserRepository _userRepository;
 
     public UserController(IUserRepository userRepository)
@@ -35,6 +37,13 @@ public class UserController : Controller
         await _userRepository.CreateAsync(user);
         return Ok("Registration successful.");
     }
+
+    [HttpGet("UserAccessControl")]
+    public async Task<IActionResult> UserAccessControl(string username, string password)
+    {
+        
+        return NotFound(false);
+    }
     
     private static (string hash, string salt) GenerateHashAndSalt(string password)
     {
@@ -50,4 +59,6 @@ public class UserController : Controller
             System.Text.Encoding.UTF8.GetBytes(password + salt)));
         return computedHash == hash;
     }
+    
+    
 }

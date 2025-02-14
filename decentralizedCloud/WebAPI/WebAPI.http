@@ -1,4 +1,4 @@
-@WebAPI_HostAddress = http://localhost:5176
+@WebAPI_HostAddress = http://192.168.1.178:5176
 
 GET {{WebAPI_HostAddress}}
 Accept: application/json

@@ -25,4 +25,6 @@ public class Peer
     [Required]
     public int Port { get; set; }
 
+    public List<DataOnPeers> DataOnPeers { get; set; }
+
 }

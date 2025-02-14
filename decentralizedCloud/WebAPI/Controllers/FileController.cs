@@ -20,7 +20,154 @@ public class FileController: ControllerBase
         _dataRepository = dataRepository;
     }
 
-    /*[HttpPost("upload")]
+
+
+    
+    #region GetIPAddresses
+    
+    // Returns when files
+    [HttpGet("GetPeersByFilename")]
+    public async Task<IActionResult> GetPeers([FromQuery] string filename)
+    {
+        // Mit Filename die Peers bekommen
+        // derzeit nicht verwendet da mit ID funktioniert
+        Console.WriteLine($"Calling GetIpForData with filename: {filename}");
+        
+        // TODO negieren
+        if (await _dataRepository.FileExistsAsync(filename))
+        {
+            Console.WriteLine("File found");
+            Dictionary<string, int> ips = new Dictionary<string, int>();
+            int dataId = await FilenameToDataId(filename);
+            List<Peer> peers = await _dataRepository.GetPeersByDataIdAsync(dataId);
+            if (peers.Count == 0)
+            {
+                Console.WriteLine("No peer found");
+                return NotFound("File not available");
+            }
+            foreach (var p in peers)
+            {
+                ips.Add(p.IpAddress, p.Port);
+            }
+            Console.WriteLine($"Found {peers.Count} peers");
+            return Ok(ips);
+            
+            /* With not unique filenames
+            List<Peer> peers = new List<Peer>();
+            Dictionary<string,int> peerIds = new Dictionary<string, int>();
+            foreach (var file in await _dataRepository.GetFilesPerFilenameAsync(filename))
+            {
+                Console.WriteLine($"FileId: {file.Id}");
+               peers = _dataRepository.GetPeersByDataIdAsync(file.Id).GetAwaiter().GetResult();
+               foreach (var p in peers)
+               {
+                   peerIds[p.IpAddress]=p.Port;
+               }
+            }
+            return Ok(peerIds);*/
+        }
+        else
+        {
+            Console.WriteLine($"File {filename} not found");
+            return NotFound("File not found");
+        }
+        
+        // Aufteilen: Sequenznumber_Filename
+
+        return BadRequest();
+    }
+
+    [HttpGet("GetPeers")]
+    public async Task<IActionResult> GetPeers(int dataId)
+    {
+        // Getting the IP-Addresses and Ports of the Peers which hold the given File
+        // TODO check if Peers are available 
+        // TODO When one Part is on multiple Peers only return 1 per Part
+        Console.WriteLine($"Calling GetPeers with id: {dataId}");
+        Dictionary<string, int> ips = new Dictionary<string, int>();
+        List<Peer> peers = await _dataRepository.GetPeersByDataIdAsync(dataId);
+        if (peers.Count == 0)
+        {
+            Console.WriteLine("No peer found");
+            return NotFound("File not available");
+        }
+        foreach (var p in peers)
+        {
+            ips.Add(p.IpAddress, p.Port);
+        }
+        Console.WriteLine($"Found {peers.Count} peers");
+        return Ok(ips);
+    }
+    
+    #endregion
+    
+
+    [HttpGet("PartToSave")]
+    public async Task<IActionResult> PartToSaveOnPeer([FromQuery] string fileName)
+    {
+        // Get Filepart least occurring in Network
+        // Sending Start and Endbyte
+        int fileId = await FilenameToDataId(fileName);
+        Console.WriteLine($"Calling PartToSaveOnPeer with id: {fileId}");
+        Data? data = await _dataRepository.GetDataByIdAsync(fileId);
+        if (data == null)
+        {
+            Console.WriteLine($"File {fileId} not found");
+            return NotFound("File not found");
+        }
+        
+        string? ipaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        int port = HttpContext.Connection.RemotePort;
+
+        if (!await _peerRepository.GetPeerSavesFile(ipaddress, port, data.Id))
+        {
+            return Ok();
+        }
+        List<int> serialNumbers = await _dataRepository.GetSerialNumbersAsync(fileId);
+        
+        // Getting least occurring 
+        int leastUsed = serialNumbers
+            .Where(x => x != 9)
+            .GroupBy(x => x)
+            .OrderBy(x => x.Count())
+            .First()
+            .Key;
+        return Ok(leastUsed);
+    }
+    
+    [ApiExplorerSettings(IgnoreApi = true)]
+    public async Task<int> FilenameToDataId(string filename)
+    {
+        Data? d = await _dataRepository.GetFilePerFilenameAsync(filename);
+        return d.Id;
+    }
+
+    // Not implementet
+    [HttpGet("CheckAllFilepartsAvailable")]
+    public async Task<IActionResult> CheckAllFilepartsAvailible([FromQuery] int fileId)
+    {
+        return NotFound();
+    }
+    
+    
+    
+    
+    // Not unique filenames
+    [HttpGet("FileInfoPerFilename")]
+    public async Task<IActionResult> GetFileInfoPerFilename([FromQuery] string filename)
+    {
+        // Getting each File with the given filename
+        // Wenn filenames nicht unique
+        Console.WriteLine($"Calling GetFileInfoPerFilename with filename: {filename}");
+        List<Data?> dataFiles = await _dataRepository.GetFilesPerFilenameAsync(filename);
+        if (dataFiles.Count > 0)
+        {
+            return Ok(dataFiles);
+        }
+        return NotFound("No file found");
+    }
+    
+        /*[HttpPost("upload")]
     public async Task<IActionResult> UploadFile([FromForm] UploadFileRequestDto request)
     {
         // Step 1: Authenticate the user
@@ -104,62 +251,4 @@ public class FileController: ControllerBase
             Peers = peerLocations
         });
     }*/
-    
-    [HttpGet("GetIpForData")]
-    public async Task<IActionResult> GetIpForData([FromQuery] string filename)
-    {
-        List<Peer> peers = new List<Peer>();
-        Dictionary<string,int> peerIds = new Dictionary<string, int>();
-        
-        if (await _dataRepository.ExistsAsync(d => d.Name == filename))
-        {
-            Console.WriteLine("File found");
-            foreach (var file in await _dataRepository.GetFilesPerFilename(filename))
-            {
-                Console.WriteLine($"FileId: {file.Id}");
-               peers = _dataRepository.GetPeersByDataIdAsync(file.Id).GetAwaiter().GetResult();
-               foreach (var p in peers)
-               {
-                   peerIds[p.IpAddress]=p.Port;
-               }
-            }
-            return Ok(peerIds);
-        }
-        else
-        {
-            return NotFound("File not found");
-        }
-        
-        // Aufteilen: Sequenznumber_Filename
-
-        return BadRequest();
-    }
-
-    [HttpGet("FileInfoPerFilename")]
-    public async Task<IActionResult> GetFileInfoPerFilename([FromQuery] string filename)
-    {
-        
-        List<Data?> dataFiles = await _dataRepository.GetFilesPerFilename(filename);
-        if (dataFiles.Count > 0)
-        {
-            return Ok(dataFiles);
-        }
-        return NotFound("File not found");
-    }
-
-    [HttpGet("GetPeers")]
-    public async Task<IActionResult> GetPeers(int dataId)
-    {
-        Dictionary<string, int> ips = new Dictionary<string, int>();
-        List<Peer> peers = await _dataRepository.GetPeersByDataIdAsync(dataId);
-        if (peers.Count == 0)
-        {
-            return NotFound("File not available");
-        }
-        foreach (var p in peers)
-        {
-            ips.Add(p.IpAddress, p.Port);
-        }
-        return Ok(ips);
-    }
 }

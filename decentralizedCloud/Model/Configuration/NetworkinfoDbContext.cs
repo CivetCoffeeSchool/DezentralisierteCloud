@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities;
 
@@ -24,6 +25,8 @@ public class NetworkinfoDbContext: DbContext
     {
         builder.Entity<User>().HasIndex(u=> u.Username).IsUnique();
         
+        builder.Entity<Data>().HasIndex(d => d.Name).IsUnique();
+        
         builder.Entity<DataOnPeers>().HasKey(dd => new { dd.DataId, dd.PeerMacAddress });
         
         builder.Entity<DataOnPeers>()
@@ -33,7 +36,7 @@ public class NetworkinfoDbContext: DbContext
         
         builder.Entity<DataOnPeers>()
             .HasOne(dd => dd.Peer)
-            .WithMany()
+            .WithMany(p => p.DataOnPeers)
             .HasForeignKey(dd => dd.PeerMacAddress);
         
         builder.Entity<UserAccessData>().HasKey(d => new { d.UserId, d.DataId });
@@ -57,7 +60,7 @@ public class NetworkinfoDbContext: DbContext
         
         builder.Entity<UserHasGroup>()
             .HasOne(dd => dd.User)
-            .WithMany()
+            .WithMany(u => u.UserGroups)
             .HasForeignKey(dd => dd.UserId);
         
         builder.Entity<Group>()
@@ -72,7 +75,7 @@ public class NetworkinfoDbContext: DbContext
         
         builder.Entity<GroupData>()
             .HasOne(dd => dd.Group)
-            .WithMany()
+            .WithMany(g => g.GroupDatas)
             .HasForeignKey(dd => dd.GroupId);
         
         builder.Entity<GroupData>()

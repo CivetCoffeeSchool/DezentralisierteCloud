@@ -13,17 +13,42 @@ public class UserRepository:ARepository<User>,IUserRepository
     {
         
     }
+
+    public async Task<List<Group>> GetUserGroups(string username)
+    {
+        int userId = await ConvertUsernameToUserId(username);
+        return await _dbSet
+            .Where(u => userId == u.UserId)
+            .Include(ug => ug.UserGroups)
+            .ThenInclude(ug => ug.Group)
+            .SelectMany(u => u.UserGroups.Select(ug => ug.Group))
+            .ToListAsync();
+    }
+    
+    public async Task<string?> GetUserAccessData(string username, int dataId)
+    {
+        int userId = await ConvertUsernameToUserId(username);
+        return await _dbSet
+            .Where(u => u.UserId == userId)
+            .Include(u => u.DataOwnerships)
+            .Select(u => u.DataOwnerships.FirstOrDefault(d => d.DataId ==dataId).ownerShipType)
+            .FirstOrDefaultAsync();
+    }
+    public async Task<int> ConvertUsernameToUserId(string username) => await _dbSet.Where(u => u.Username == username).Select(u => u.UserId).FirstAsync();
+    
+    
+    
+    
+    
     public async Task<User?> ReadGraphAsync(string username)=> await _dbSet
         .Include(u=>u.DataOwnerships)
         .ThenInclude(d=>d.Data)
         .FirstOrDefaultAsync(u => u.Username == username);
-        
 
     public async Task<User?> GetByUsernameAsync(string username)
     {
         return (await ReadAsync(u => u.Username == username)).FirstOrDefault();
     }
-
 
     public async Task<User?> RegisterAsync(string username, string password, string userType = "USER")
     {

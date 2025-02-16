@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CCD5C350-EF90-49E4-81DB-6222A4BA57DD}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
+		Notes.md = Notes.md
+		Info.md = Info.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebGUI", "WebGUI\WebGUI.csproj", "{D9056185-7035-4D99-AE26-1FB4DE620341}"

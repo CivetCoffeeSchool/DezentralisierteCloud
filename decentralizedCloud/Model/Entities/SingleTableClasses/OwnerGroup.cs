@@ -1,6 +1,6 @@
-namespace Model.Entities;
-
-public class OwnerGroup : GroupData
-{
-    
-}
+// namespace Model.Entities;
+//
+// public class OwnerGroup : GroupData
+// {
+//     
+// }

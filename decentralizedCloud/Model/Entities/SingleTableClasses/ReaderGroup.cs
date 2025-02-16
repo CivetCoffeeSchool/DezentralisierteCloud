@@ -1,6 +1,6 @@
-namespace Model.Entities;
-
-public class ReaderGroup : GroupData
-{
-    
-}
+// namespace Model.Entities;
+//
+// public class ReaderGroup : GroupData
+// {
+//     
+// }

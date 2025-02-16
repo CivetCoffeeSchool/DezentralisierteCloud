@@ -11,8 +11,8 @@ public class NetworkinfoDbContext: DbContext
     public DbSet<Data> Data { get; set; }
     public DbSet<Peer> Peers { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<Group> Groups { get; set; }
-    public DbSet<UserHasGroup> UserHasGroups { get; set; }
+    // public DbSet<Group> Groups { get; set; }
+    // public DbSet<UserHasGroup> UserHasGroups { get; set; }
     public DbSet<DataOnPeers> DataDistributions { get; set; }
     public DbSet<UserAccessData> DataOwnerships { get; set; }
     #endregion
@@ -51,65 +51,67 @@ public class NetworkinfoDbContext: DbContext
             .WithMany()
             .HasForeignKey(u => u.UserId);
         
-        builder.Entity<UserHasGroup>().HasKey(ug => new { ug.UserId, ug.GroupId });
         
-        builder.Entity<UserHasGroup>()
-            .HasOne(ug => ug.Group)
-            .WithMany()
-            .HasForeignKey(ug => ug.GroupId);
-        
-        builder.Entity<UserHasGroup>()
-            .HasOne(dd => dd.User)
-            .WithMany(u => u.UserGroups)
-            .HasForeignKey(dd => dd.UserId);
-        
-        builder.Entity<Group>()
-            .HasIndex(u => u.GroupName).IsUnique();
-        
-        builder.Entity<GroupData>().HasKey(dd => new { dd.DataId, dd.GroupId });
-        
-        builder.Entity<GroupData>()
-            .HasOne(dd => dd.Data)
-            .WithMany()
-            .HasForeignKey(dd => dd.DataId);
-        
-        builder.Entity<GroupData>()
-            .HasOne(dd => dd.Group)
-            .WithMany(g => g.GroupDatas)
-            .HasForeignKey(dd => dd.GroupId);
-        
-        builder.Entity<GroupData>()
-            .HasOne(dd => dd.Data)
-            .WithMany()
-            .HasForeignKey(dd => dd.DataId);
-        
-        builder.Entity<GroupData>()
-            .HasOne(dd => dd.Group)
-            .WithMany()
-            .HasForeignKey(dd => dd.GroupId);
         
         
         builder.Entity<Peer>()
             .HasDiscriminator(u => u.peerType)
             .HasValue<SuperPeer>("SUPERPEER")
             .HasValue<NormalPeer>("PEER");
-        
+
         builder.Entity<UserAccessData>()
             .HasDiscriminator(d => d.ownerShipType)
-            .HasValue<Owner>("OWNER")
-            .HasValue<Reader>("READER")
-            .HasValue<NoAccess>("NONE");
+            .HasValue<EditorAccess>("EDITOR")
+            .HasValue<ViewerAccess>("VIEWER");
+            // .HasValue<NoAccess>("NONE");
         
-        builder.Entity<GroupData>()
-            .HasDiscriminator(gd => gd.ownershipType)
-            .HasValue<OwnerGroup>("OWNER")
-            .HasValue<ReaderGroup>("READER")
-            .HasValue<NoAccessGroup>("NONE");
+        
         
         builder.Entity<User>()
             .HasDiscriminator(u => u.userType)
             .HasValue<AdminUser>("ADMIN")
             .HasValue<NormalUser>("USER");
         
+        // builder.Entity<UserHasGroup>().HasKey(ug => new { ug.UserId, ug.GroupId });
+        //
+        // builder.Entity<UserHasGroup>()
+        //     .HasOne(ug => ug.Group)
+        //     .WithMany()
+        //     .HasForeignKey(ug => ug.GroupId);
+        //
+        // builder.Entity<UserHasGroup>()
+        //     .HasOne(dd => dd.User)
+        //     .WithMany(u => u.UserGroups)
+        //     .HasForeignKey(dd => dd.UserId);
+        //
+        // builder.Entity<Group>()
+        //     .HasIndex(u => u.GroupName).IsUnique();
+        //
+        // builder.Entity<GroupData>().HasKey(dd => new { dd.DataId, dd.GroupId });
+        //
+        // builder.Entity<GroupData>()
+        //     .HasOne(dd => dd.Data)
+        //     .WithMany()
+        //     .HasForeignKey(dd => dd.DataId);
+        //
+        // builder.Entity<GroupData>()
+        //     .HasOne(dd => dd.Group)
+        //     .WithMany(g => g.GroupDatas)
+        //     .HasForeignKey(dd => dd.GroupId);
+        //
+        // builder.Entity<GroupData>()
+        //     .HasOne(dd => dd.Data)
+        //     .WithMany()
+        //     .HasForeignKey(dd => dd.DataId);
+        //
+        // builder.Entity<GroupData>()
+        //     .HasOne(dd => dd.Group)
+        //     .WithMany()
+        //     .HasForeignKey(dd => dd.GroupId);
+        // builder.Entity<GroupData>()
+        //     .HasDiscriminator(gd => gd.ownershipType)
+        //     .HasValue<OwnerGroup>("OWNER")
+        //     .HasValue<ReaderGroup>("READER")
+        //     .HasValue<NoAccessGroup>("NONE");
     }
 }

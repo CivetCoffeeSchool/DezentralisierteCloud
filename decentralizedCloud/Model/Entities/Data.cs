@@ -5,10 +5,6 @@ namespace Model.Entities;
 [Table("DATA")]
 public class Data
 {
-    public Data()
-    {
-        uploadTime = DateTimeOffset.UtcNow;
-    }
     
     [Column("DATA_ID")]
     [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -22,7 +18,7 @@ public class Data
     public int Size { get; set; }//Byte
     
     [Column("UPLOAD_TIME"),Required] 
-    public DateTimeOffset uploadTime { get; init; }
+    public DateTimeOffset UploadTime { get; init; }=DateTimeOffset.UtcNow;
     
     public List<DataOnPeers> DataDistributions { get; set; } = new List<DataOnPeers>();
 }

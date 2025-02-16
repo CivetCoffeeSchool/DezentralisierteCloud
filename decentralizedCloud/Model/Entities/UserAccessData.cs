@@ -12,7 +12,7 @@ public class UserAccessData
     public int DataId { get; set; }
     
     [Column("OWNERSHIP_TYPE")]
-    public string ownerShipType { get; set; }
+    public string OwnershipType { get; set; }
     
     public Data Data { get; set; }
     public User User { get; set; }

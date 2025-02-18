@@ -23,10 +23,10 @@ public class UserController : Controller
     {
         var existingUser = await _userRepository.GetByUsernameAsync(dto.Username);
         if (existingUser != null)
-            return BadRequest("Username already exists.");
+            return NotFound("Username already exists.");
 
         var (hash, salt) = GenerateHashAndSalt(dto.Password);
-        var user = new User
+        var user = new NormalUser()
         {
             Username = dto.Username,
             PasswordHash = hash,

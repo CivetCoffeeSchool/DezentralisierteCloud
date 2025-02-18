@@ -54,7 +54,7 @@ public class NetworkinfoDbContext: DbContext
         
         builder.Entity<Data>().HasIndex(d => d.Name).IsUnique();
         
-        builder.Entity<DataOnPeers>().HasKey(dd => new { dd.DataId, dd.PeerMacAddress });
+        builder.Entity<DataOnPeers>().HasKey(dd => new { dd.DataId, dd.PeerId });
         
         builder.Entity<DataOnPeers>()
             .HasOne(dd => dd.Data)
@@ -64,7 +64,7 @@ public class NetworkinfoDbContext: DbContext
         builder.Entity<DataOnPeers>()
             .HasOne(dd => dd.Peer)
             .WithMany(p => p.DataOnPeers)
-            .HasForeignKey(dd => dd.PeerMacAddress);
+            .HasForeignKey(dd => dd.PeerId);
         
         builder.Entity<Peer>()
             .HasDiscriminator(u => u.PeerType)

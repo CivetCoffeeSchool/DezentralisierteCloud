@@ -12,7 +12,7 @@ public class DataOnPeers
     public int DataId { get; set; }
     
     [Column("PEER_ID"),Required]
-    public string PeerMacAddress { get; set; }
+    public int PeerId { get; set; }
     
     
     public Data Data { get; set; }

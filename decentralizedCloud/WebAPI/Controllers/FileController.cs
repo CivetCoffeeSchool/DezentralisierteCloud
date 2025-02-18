@@ -13,14 +13,16 @@ public class FileController: ControllerBase
     private readonly IUserRepository _userRepository;
     private readonly IPeerRepository _peerRepository;
     private readonly IDataRepository _dataRepository;
-    public FileController(IUserRepository userRepository, IPeerRepository peerRepository, IDataRepository dataRepository)
+    private readonly IRepository<DataOnPeers> _dataOnPeersRepository;
+    public FileController(IUserRepository userRepository, IPeerRepository peerRepository, IDataRepository dataRepository, IRepository<DataOnPeers> dataOnPeersRepository)
     {
         _userRepository = userRepository;
         _peerRepository = peerRepository;
         _dataRepository = dataRepository;
+        _dataOnPeersRepository = dataOnPeersRepository;
     }
 
-
+    // TODO Filehash für jedes File erstellen
 
     
     #region GetIPAddresses
@@ -74,7 +76,7 @@ public class FileController: ControllerBase
         
         // Aufteilen: Sequenznumber_Filename
 
-        return BadRequest();
+        return NotFound();
     }
 
     [HttpGet("GetPeers")]
@@ -101,7 +103,7 @@ public class FileController: ControllerBase
     
     #endregion
     
-
+    
     [HttpGet("PartToSave")]
     public async Task<IActionResult> PartToSaveOnPeer([FromQuery] string fileName)
     {
@@ -115,11 +117,12 @@ public class FileController: ControllerBase
             Console.WriteLine($"File {fileId} not found");
             return NotFound("File not found");
         }
-        
-        string? ipaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-        int port = HttpContext.Connection.RemotePort;
 
-        if (!await _peerRepository.GetPeerSavesFile(ipaddress, port, data.Id))
+        string ipAddress = "";
+        int port = 0;
+        (ipAddress, port) = GetIpFromRequest(HttpContext.Request);
+
+        if (!await _peerRepository.GetPeerSavesFile(ipAddress, port, data.Id))
         {
             return Ok();
         }
@@ -134,6 +137,30 @@ public class FileController: ControllerBase
             .Key;
         return Ok(leastUsed);
     }
+
+    [HttpPost("PeerSavedFile")]
+    public async Task<IActionResult> SavePeerSavedFileOnPeer([FromQuery] string fileName, [FromQuery] int sequenznumber)
+    {
+        string ipAddress = "";
+        int port = 0;
+        (ipAddress, port) = GetIpFromRequest(HttpContext.Request);
+        Peer? peer = await _peerRepository.FindPeerByIpAndPortAsync(ipAddress, port);
+        Data? data = await _dataRepository.GetFilePerFilenameAsync(fileName);
+        if (peer == null)
+        {
+            return NotFound($"Peer on {ipAddress}:{port} not found");
+        }
+        else if (data == null)
+        {
+            return NotFound($"File {fileName} not found");
+        }
+
+        _dataOnPeersRepository.CreateAsync(new DataOnPeers()
+        {
+            Data = data, DataId = data.Id, Peer = peer, PeerId = peer.PeerId, SequenceNumber = sequenznumber
+        });
+        return Ok();
+    }
     
     [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<int> FilenameToDataId(string filename)
@@ -141,20 +168,25 @@ public class FileController: ControllerBase
         Data? d = await _dataRepository.GetFilePerFilenameAsync(filename);
         return d.Id;
     }
+    
+    [ApiExplorerSettings(IgnoreApi = true)]
+    private (string,int) GetIpFromRequest(HttpRequest request)
+    {
+        string? ipaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        int port = HttpContext.Connection.RemotePort;
+        return (ipaddress, port);
+    }
 
     // Not implementet
     [HttpGet("CheckAllFilepartsAvailable")]
-    public async Task<IActionResult> CheckAllFilepartsAvailible([FromQuery] int fileId)
+    private async Task<IActionResult> CheckAllFilepartsAvailible([FromQuery] int fileId)
     {
         return NotFound();
     }
     
-    
-    
-    
     // Not unique filenames
     [HttpGet("FileInfoPerFilename")]
-    public async Task<IActionResult> GetFileInfoPerFilename([FromQuery] string filename)
+    private async Task<IActionResult> GetFileInfoPerFilename([FromQuery] string filename)
     {
         // Getting each File with the given filename
         // Wenn filenames nicht unique
@@ -165,6 +197,16 @@ public class FileController: ControllerBase
             return Ok(dataFiles);
         }
         return NotFound("No file found");
+    }
+
+    [HttpPost("UploadFile")]
+    public IActionResult UploadFile([FromBody] IFormFile? file)
+    {
+        if (file == null)
+        {
+            return BadRequest();
+        }   
+        return Ok();
     }
     
         /*[HttpPost("upload")]

@@ -19,6 +19,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDataRepository, DataRepository>();
 builder.Services.AddScoped<IPeerRepository, PeerRepository>();
 builder.Services.AddScoped<IRepository<DataOnPeers>,ARepository<DataOnPeers>>();
+builder.Services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
 
 builder.Services.AddDbContextFactory<NetworkinfoDbContext>(
     options => options.UseMySql(

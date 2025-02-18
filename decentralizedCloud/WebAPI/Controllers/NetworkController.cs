@@ -26,7 +26,7 @@ public class NetworkController:ControllerBase
             Username = adminUsername,
             PasswordHash = passwordHash,
             PasswordSalt = Convert.ToBase64String(salt),
-            userType = "USER"
+            UserType = "USER"
         };
 
         await _userRepository.CreateAsync(admin);

@@ -62,7 +62,7 @@ public class UserRepository:ARepository<User>,IUserRepository
             Username = username,
             PasswordHash = hash,
             PasswordSalt = salt,
-            userType = userType
+            UserType = userType
         };
         return await CreateAsync(user);
     }

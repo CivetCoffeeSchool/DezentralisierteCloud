@@ -27,4 +27,5 @@ public class Data
     public int UploaderId { get; set; }
     public User Uploader { get; init; }
     public List<DataOnPeers> DataDistributions { get; set; } = new List<DataOnPeers>();
+    public List<UserAccessData> DataOwners { get; set; } = new List<UserAccessData>();
 }

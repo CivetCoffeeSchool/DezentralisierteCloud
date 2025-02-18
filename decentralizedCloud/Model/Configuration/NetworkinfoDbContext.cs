@@ -25,6 +25,33 @@ public class NetworkinfoDbContext: DbContext
     {
         builder.Entity<User>().HasIndex(u=> u.Username).IsUnique();
         
+        builder.Entity<User>()
+            .HasDiscriminator(u => u.UserType)
+            .HasValue<AdminUser>("ADMIN")
+            .HasValue<NormalUser>("USER");
+
+        builder.Entity<Data>()
+            .HasOne(d => d.Uploader)
+            .WithMany(u => u.UploadedDatas)
+            .HasForeignKey(d => d.UploaderId);
+        
+        builder.Entity<UserAccessData>().HasKey(d => new { d.UserId, d.DataId });
+        
+        builder.Entity<UserAccessData>()
+            .HasDiscriminator(d => d.OwnershipType)
+            .HasValue<EditorAccess>("EDITOR")
+            .HasValue<ViewerAccess>("VIEWER");
+        
+        builder.Entity<UserAccessData>()
+            .HasOne(d => d.Data)
+            .WithMany(d=>d.DataOwners)
+            .HasForeignKey(d=>d.DataId);
+        
+        builder.Entity<UserAccessData>()
+            .HasOne(u => u.User)
+            .WithMany(d=>d.DataAccesses)
+            .HasForeignKey(u => u.UserId);
+        
         builder.Entity<Data>().HasIndex(d => d.Name).IsUnique();
         
         builder.Entity<DataOnPeers>().HasKey(dd => new { dd.DataId, dd.PeerMacAddress });
@@ -39,38 +66,16 @@ public class NetworkinfoDbContext: DbContext
             .WithMany(p => p.DataOnPeers)
             .HasForeignKey(dd => dd.PeerMacAddress);
         
-        builder.Entity<UserAccessData>().HasKey(d => new { d.UserId, d.DataId });
-        
-        builder.Entity<UserAccessData>()
-            .HasOne(d => d.Data)
-            .WithMany()
-            .HasForeignKey(d=>d.DataId);
-        
-        builder.Entity<UserAccessData>()
-            .HasOne(u => u.User)
-            .WithMany()
-            .HasForeignKey(u => u.UserId);
-        
-        
-        
-        
         builder.Entity<Peer>()
-            .HasDiscriminator(u => u.peerType)
+            .HasDiscriminator(u => u.PeerType)
             .HasValue<SuperPeer>("SUPERPEER")
             .HasValue<NormalPeer>("PEER");
 
-        builder.Entity<UserAccessData>()
-            .HasDiscriminator(d => d.ownerShipType)
-            .HasValue<EditorAccess>("EDITOR")
-            .HasValue<ViewerAccess>("VIEWER");
-            // .HasValue<NoAccess>("NONE");
         
         
         
-        builder.Entity<User>()
-            .HasDiscriminator(u => u.userType)
-            .HasValue<AdminUser>("ADMIN")
-            .HasValue<NormalUser>("USER");
+        
+        
         
         // builder.Entity<UserHasGroup>().HasKey(ug => new { ug.UserId, ug.GroupId });
         //

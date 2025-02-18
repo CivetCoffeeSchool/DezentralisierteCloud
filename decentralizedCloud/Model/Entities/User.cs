@@ -14,7 +14,7 @@ public abstract class User
     public string Username{ get; set; }
     
     [Column("USER_TYPE"),StringLength(20)]
-    public string userType{ get; set; }
+    public string UserType{ get; set; }
     
     [Column("PASSWORD_HASH")]
     public string PasswordHash{ get; set; }
@@ -23,6 +23,6 @@ public abstract class User
     public string PasswordSalt{ get; set; }
 
     public List<UserAccessData> DataAccesses{ get; set; } = new List<UserAccessData>();
-    public List<Data> DataOwnerships{ get; set; } = new List<Data>();
+    public List<Data> UploadedDatas{ get; set; } = new List<Data>();
     // public List<UserHasGroup> UserGroups{ get; set; } = new List<UserHasGroup>();
 }

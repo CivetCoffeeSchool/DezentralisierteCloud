@@ -22,6 +22,6 @@ public class Peer
     [Column("PORT")]
     public int Port { get; set; }
 
-    public List<DataOnPeers> DataOnPeers { get; set; }
+    public List<DataOnPeers> DataOnPeers { get; set; } = new List<DataOnPeers>();
 
 }

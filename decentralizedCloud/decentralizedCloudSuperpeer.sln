@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CCD5C350-EF90-49E4-81DB-6222A4BA57DD}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
-		Notes.md = Notes.md
+		NotesAndTodos.md = NotesAndTodos.md
 		Info.md = Info.md
 	EndProjectSection
 EndProject

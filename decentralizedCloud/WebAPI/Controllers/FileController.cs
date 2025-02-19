@@ -41,7 +41,7 @@ public class FileController: ControllerBase
             Console.WriteLine("File found");
             Dictionary<string, int> ips = new Dictionary<string, int>();
             int dataId = await FilenameToDataId(filename);
-            List<Peer> peers = await _dataRepository.GetPeersByDataIdAsync(dataId);
+            List<Model.Entities.Peer> peers = await _dataRepository.GetPeersByDataIdAsync(dataId);
             if (peers.Count == 0)
             {
                 Console.WriteLine("No peer found");
@@ -87,7 +87,7 @@ public class FileController: ControllerBase
         // TODO When one Part is on multiple Peers only return 1 per Part
         Console.WriteLine($"Calling GetPeers with id: {dataId}");
         Dictionary<string, int> ips = new Dictionary<string, int>();
-        List<Peer> peers = await _dataRepository.GetPeersByDataIdAsync(dataId);
+        List<Model.Entities.Peer> peers = await _dataRepository.GetPeersByDataIdAsync(dataId);
         if (peers.Count == 0)
         {
             Console.WriteLine("No peer found");
@@ -144,7 +144,7 @@ public class FileController: ControllerBase
         string ipAddress = "";
         int port = 0;
         (ipAddress, port) = GetIpFromRequest(HttpContext.Request);
-        Peer? peer = await _peerRepository.FindPeerByIpAndPortAsync(ipAddress, port);
+        Model.Entities.Peer peer = await _peerRepository.FindPeerByIpAndPortAsync(ipAddress, port);
         Data? data = await _dataRepository.GetFilePerFilenameAsync(fileName);
         if (peer == null)
         {

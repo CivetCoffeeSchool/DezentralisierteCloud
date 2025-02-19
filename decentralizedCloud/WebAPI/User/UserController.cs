@@ -30,7 +30,6 @@ public class UserController : Controller
         {
             Username = dto.Username,
             PasswordHash = hash,
-            PasswordSalt = salt,
             UserType = "USER"
         };
 
@@ -41,7 +40,6 @@ public class UserController : Controller
     [HttpGet("UserAccessControl")]
     public async Task<IActionResult> UserAccessControl(string username, string password)
     {
-        
         return NotFound(false);
     }
     

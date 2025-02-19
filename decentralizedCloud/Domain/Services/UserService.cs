@@ -1,4 +1,5 @@
-﻿using Domain.Repositories.Interfaces;
+﻿using Domain.Exceptions;
+using Domain.Repositories.Interfaces;
 using Model.Entities;
 
 namespace Domain.Services;
@@ -7,11 +8,11 @@ namespace Domain.Services;
 public class UserService
 {
     private readonly IUserRepository _userRepo;
-    private readonly IPasswordHasher _hasher;
+    private readonly BcryptPasswordHasher _hasher;
 
     public UserService(
         IUserRepository userRepo,
-        IPasswordHasher hasher)
+        BcryptPasswordHasher hasher)
     {
         _userRepo = userRepo;
         _hasher = hasher;
@@ -22,12 +23,11 @@ public class UserService
         if (await _userRepo.UsernameExistsAsync(username))
             throw new ConflictException("Username already exists");
 
-        var (hash, salt) = _hasher.CreateHash(password);
+        var hash = _hasher.CreateHash(password);
         
-        var user = new User {
+        var user = new NormalUser() {
             Username = username,
             PasswordHash = hash,
-            PasswordSalt = salt
         };
 
         await _userRepo.CreateAsync(user);

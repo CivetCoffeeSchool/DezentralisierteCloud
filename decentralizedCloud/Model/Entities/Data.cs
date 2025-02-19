@@ -18,7 +18,7 @@ public class Data
     
     [Column("SIZE")]
     [Required]
-    public int Size { get; set; }//Byte
+    public long Size { get; set; }//Byte
     
     [Column("UPLOAD_TIME"),Required] 
     public DateTimeOffset UploadTime { get; init; }=DateTimeOffset.UtcNow;

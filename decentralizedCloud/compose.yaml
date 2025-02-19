@@ -1,18 +1,37 @@
 ﻿services:
-  webgui:
-    image: webgui
-    build:
-      context: .
-      dockerfile: webGUI/Dockerfile
+  managementserver:
+    image: managementserver
+    volumes:
+      - ./config:/app/config  # Network config persists here
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    depends_on:
+      - mysql
 
-  webgui-1:
-    image: webgui-1
-    build:
-      context: .
-      dockerfile: WebGUI/Dockerfile
-
-  webapi:
-    image: webapi
-    build:
-      context: .
-      dockerfile: WebAPI/Dockerfile
+  dataserver:
+    image: dataserver
+    environment:
+      - NetworkKey=${NETWORK_KEY}  # Passed during deployment
+    command: [ "--join", "managementserver:5000" ]
+      
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: p2pcloud
+    volumes:
+      - mysql_data:/var/lib/mysql
+#  webgui:
+#    image: webgui
+#    build:
+#      context: .
+#      dockerfile: webGUI/Dockerfile
+#
+#  webapi:
+#    image: webapi
+#    build:
+#      context: .
+#      dockerfile: WebAPI/Dockerfile
+volumes:
+  mysql_data:
+  network-config:

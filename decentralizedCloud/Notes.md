@@ -1,3 +1,0 @@
--   Required braucht man nicht bei int und string
-- DataOwnerships sind hochgeladene Daten
-- DataAccesses sind Zugriffe

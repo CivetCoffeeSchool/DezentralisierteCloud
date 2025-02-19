@@ -5,6 +5,7 @@ namespace Model.Entities;
 [Table("DATA_SAVED_ON_PEERS_JT")]
 public class DataOnPeers
 {
+    
     [Column("SEQUENCE_NUMBER"),Key]
     public int SequenceNumber { get; set; }
     
@@ -17,4 +18,11 @@ public class DataOnPeers
     
     public Data Data { get; set; }
     public Peer Peer { get; set; }
+    
+    [Column("CHUNK_HASH")]
+    [StringLength(64)]
+    public string ChunkHash { get; set; }
+    
+    [Column("CHUNK_SIZE")]
+    public long ChunkSize { get; set; }
 }

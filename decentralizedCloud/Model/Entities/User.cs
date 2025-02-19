@@ -19,8 +19,9 @@ public abstract class User
     [Column("PASSWORD_HASH")]
     public string PasswordHash{ get; set; }
     
-    [Column("PASSWORD_SALT")]
-    public string PasswordSalt{ get; set; }
+    // [Column("PASSWORD_SALT")]
+    // public string PasswordSalt{ get; set; }
+    // Not needed because of BCrypt
 
     public List<UserAccessData> DataAccesses{ get; set; } = new List<UserAccessData>();
     public List<Data> UploadedDatas{ get; set; } = new List<Data>();

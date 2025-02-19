@@ -6,10 +6,12 @@ namespace WebAPI.Controllers;
 public class AuthController:ControllerBase
 {
     private readonly AuthService _authService;
+    private readonly JwtService _jwtService;
 
-    public AuthController(AuthService authService)
+    public AuthController(AuthService authService, JwtService jwtService)
     {
         _authService = authService;
+        _jwtService = jwtService;
     }
 
     [HttpPost("login")]
@@ -17,7 +19,8 @@ public class AuthController:ControllerBase
     {
         var user = await _authService.AuthenticateAsync(dto.Username, dto.Password);
         return user != null 
-            ? Ok(GenerateJwt(user)) 
+            ? Ok(_jwtService.GenerateJwt(user)) 
             : Unauthorized();
     }
 }
+//TODO: JWT entfohlen nicht zu verwenden, sondern jedes mal einlogen 

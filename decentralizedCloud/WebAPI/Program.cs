@@ -11,7 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null; // Preserve property names as-is
+});;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -19,7 +22,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDataRepository, DataRepository>();
 builder.Services.AddScoped<IPeerRepository, PeerRepository>();
 builder.Services.AddScoped<IRepository<DataOnPeers>,ARepository<DataOnPeers>>();
-builder.Services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
+//builder.Services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddDbContextFactory<NetworkinfoDbContext>(
     options => options.UseMySql(

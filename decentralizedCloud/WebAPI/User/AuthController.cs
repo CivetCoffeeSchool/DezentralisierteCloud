@@ -1,4 +1,4 @@
-﻿using Domain.Services;
+﻿/*using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -23,4 +23,4 @@ public class AuthController:ControllerBase
             : Unauthorized();
     }
 }
-//TODO: JWT entfohlen nicht zu verwenden, sondern jedes mal einlogen 
+//TODO: JWT entfohlen nicht zu verwenden, sondern jedes mal einlogen */

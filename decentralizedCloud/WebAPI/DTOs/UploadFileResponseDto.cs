@@ -4,7 +4,9 @@ namespace WebAPI.DTOs;
 
 public class UploadFileResponseDto
 {
-    public Model.Entities.Peer FullCopyPeer { get; set; }
-    public Model.Entities.Peer Part1Peer { get; set; }
-    public Model.Entities.Peer Part2Peer { get; set; }
+    // TODO Change type to Dictionary<string,List<int>> if 2 Clients have the same IP with different port
+    public Dictionary<string,int> Adresses { get; set; } = new Dictionary<string, int>();
+    public int SequenzNumber { get; set; } = 8;
+    public int maxSequenz { get; set; } = 0;
+
 }

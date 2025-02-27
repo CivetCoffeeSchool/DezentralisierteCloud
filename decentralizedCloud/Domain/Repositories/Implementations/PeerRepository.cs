@@ -42,6 +42,14 @@ public class PeerRepository: ARepository<Peer>, IPeerRepository
         }
         return false;
     }
-    
 
+    public async Task<Dictionary<Peer,long>> GetPeerDataOnPeerAsync(string ipaddress, int port, int dataId)
+    {
+        var peers = _dbSet
+            .Where(p => p.AvaliableSpace > 0)
+            // TODO Add Filter for Heartbeat .Where(p => p.LastHeartbeat > DateTime.UtcNow.AddMinutes(-5))
+            .ToList();
+
+        return peers.ToDictionary(g => g, g => g.AvaliableSpace).OrderBy(g => g.Value).ThenBy(g => g.Key).ToDictionary(g => g.Key, g => g.Value);
+    }
 }

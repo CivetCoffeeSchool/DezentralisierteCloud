@@ -1,5 +1,4 @@
-﻿using Domain.Repositories.Interfaces;
-using Domain.Services;
+﻿/*using Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Model.Entities;
 
@@ -36,4 +35,4 @@ public class NetworkController:ControllerBase
         //TODO: 
     }
     
-}
+}*/

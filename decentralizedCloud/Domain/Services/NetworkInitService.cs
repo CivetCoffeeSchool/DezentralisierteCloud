@@ -1,5 +1,5 @@
 ﻿
-using System.Security.Cryptography;
+/*using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Domain.Repositories.DTOs;
@@ -54,4 +54,4 @@ public class NetworkInitService
         rng.GetBytes(bytes);
         return Convert.ToBase64String(bytes);
     }
-}
+}*/

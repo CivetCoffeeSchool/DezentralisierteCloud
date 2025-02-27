@@ -16,4 +16,12 @@ public interface IDataRepository:IRepository<Data>
     Task<bool> FileExistsAsync(int dataId);
     Task<bool> FileExistsAsync(string filename);
 
+    Task<bool> FileHashExsistsAsync(string fileHash);
+
+    Task<string?> FilenameByFileHash(string fileHash);
+
+    Task<Data?> GetDataByFileHash(string hash);
+
+    Task<int?> FileIdByFileHash(string fileHash);
+
 }

@@ -29,4 +29,12 @@ public class DataRepository: ARepository<Data>, IDataRepository
     public async Task<List<int>> GetSerialNumbersAsync(int dataId)=> await _dbSet.Where(d => d.Id == dataId).Include(d => d.DataDistributions).SelectMany(dd=> dd.DataDistributions).Select(d => d.SequenceNumber).ToListAsync();
     
     public async Task<Data?> GetDataByIdAsync(int dataId) => await _dbSet.Where(d => d.Id == dataId).FirstOrDefaultAsync();
+    
+    public async Task<bool> FileHashExsistsAsync(string fileHash) => await _dbSet.AnyAsync(d => d.FileHash == fileHash);
+    
+    public async Task<string?> FilenameByFileHash(string fileHash) => await _dbSet.Where(d => d.FileHash == fileHash).Select(d => d.Name).FirstOrDefaultAsync();
+    public async Task<int?> FileIdByFileHash(string fileHash) => await _dbSet.Where(d => d.FileHash == fileHash).Select(d => d.Id).FirstOrDefaultAsync();
+    
+    public async Task<Data?> GetDataByFileHash(string hash) => await _dbSet.Where(d => d.FileHash == hash).FirstOrDefaultAsync();
+    
 }

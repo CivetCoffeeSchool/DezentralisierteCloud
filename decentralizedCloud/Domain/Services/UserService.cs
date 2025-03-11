@@ -1,4 +1,4 @@
-﻿/*using Domain.Exceptions;
+﻿using Domain.Exceptions;
 using Domain.Repositories.Interfaces;
 using Model.Entities;
 
@@ -33,4 +33,4 @@ public class UserService
         await _userRepo.CreateAsync(user);
         return user;
     }
-}*/
+}

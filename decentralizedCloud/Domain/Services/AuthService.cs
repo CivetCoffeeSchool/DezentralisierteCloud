@@ -1,4 +1,4 @@
-﻿/*using Domain.Repositories.Interfaces;
+﻿using Domain.Repositories.Interfaces;
 using Model.Entities;
 
 namespace Domain.Services;
@@ -25,4 +25,4 @@ public class AuthService
             ? user 
             : null;
     }
-}*/
+}
